@@ -22,6 +22,12 @@ const Page = () => {
         // Handle adding the task
     };
 
+    const handleDelete = (i) => {
+                 let copytask = [...mainTasks]
+                 copytask.splice(i, 1)
+                 setMainTasks(copytask);
+        }
+
     let renderTask = <h2>No Task Avilable </h2>
 
     if (mainTasks.length > 0 ) {
@@ -30,8 +36,12 @@ const Page = () => {
             <li className="flex items-center justify-between bg-white p-4 rounded-lg shadow-md mb-4" key={i}>
                 <div className="flex items-center justify-between m-1">
                     <h5 className="text-2xl m-4 font-semibold"> {t.task}   </h5>
-                    <h6 className="text-2xl m-4 font-semibold">{t.description}</h6>
-                    <button className="bg-red-500 text-white px-2 py-1 rounded ">Delete</button>
+                    <h6 className="text-2xl m-4 font-medium">{t.description}</h6>
+                    <button 
+                    onClick={()=>{
+                        handleDelete(i)
+                    }}
+                    className="bg-red-500 text-white px-2 py-1 rounded ">Delete</button>
                 </div>
         </li>
         )
