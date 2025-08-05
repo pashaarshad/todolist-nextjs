@@ -1,35 +1,45 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+const TASKS_KEY = "todolist_tasks";
 
 const Page = () => {
     const [task, setTask] = useState("");
     const [description, setDescription] = useState("");
     const [mainTasks, setMainTasks] = useState([]);
 
-    // Handle form submission to add a new task
+    
+    useEffect(() => {
+        const storedTasks = localStorage.getItem(TASKS_KEY);
+        if (storedTasks) {
+            setMainTasks(JSON.parse(storedTasks));
+        }
+    }, []);
+
+    
+    useEffect(() => {
+        localStorage.setItem(TASKS_KEY, JSON.stringify(mainTasks));
+    }, [mainTasks]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Add new task with completed: false
         setMainTasks([...mainTasks, { task, description, completed: false }]);
         setTask("");
         setDescription("");
     };
 
-    // Delete a task by index
     const handleDelete = (i) => {
         let copytask = [...mainTasks];
         copytask.splice(i, 1);
         setMainTasks(copytask);
     };
 
-    // Mark a task as completed by index
     const handleComplete = (i) => {
         let copytask = [...mainTasks];
         copytask[i].completed = true;
         setMainTasks(copytask);
     };
 
-    // Render tasks or a message if no tasks
     let renderTask = <h2>No Task Available</h2>;
 
     if (mainTasks.length > 0) {
@@ -40,7 +50,6 @@ const Page = () => {
                     key={i}
                 >
                     <div className="flex items-center justify-between m-1">
-                        {/* Show completed tasks with line-through */}
                         <h5
                             className={`text-2xl m-4 font-semibold ${t.completed ? "line-through text-gray-400" : ""
                                 }`}
@@ -53,7 +62,6 @@ const Page = () => {
                         >
                             {t.description}
                         </h6>
-                        {/* Complete button, disabled if already completed */}
                         <button
                             onClick={() => handleComplete(i)}
                             className={`bg-green-500 text-white px-2 py-1 rounded mr-2 ${t.completed ? "opacity-50 cursor-not-allowed" : ""
@@ -62,7 +70,6 @@ const Page = () => {
                         >
                             {t.completed ? "Completed" : "Complete"}
                         </button>
-                        {/* Delete button */}
                         <button
                             onClick={() => handleDelete(i)}
                             className="bg-red-500 text-white px-2 py-1 rounded"
